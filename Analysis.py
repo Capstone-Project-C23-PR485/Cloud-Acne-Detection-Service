@@ -77,15 +77,3 @@ def detect_acne(image_path, model, threshold):
         return image_result, acne_class, confidence
     else:
         return "congrats you dont have acne!!!"
-
-# Allow the user to upload an image file
-# uploaded = files.upload()
-
-# # Get the path of the uploaded image
-# image_path = next(iter(uploaded.keys()))
-
-# # Set the threshold for acne detection (adjust as needed)
-# threshold = 0.5
-
-# # Perform acne detection and annotation
-# detect_acne(image_path, model, threshold)
