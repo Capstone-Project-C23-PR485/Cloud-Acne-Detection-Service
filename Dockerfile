@@ -10,7 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE 8080
 
 # Set environment variables
 ENV FLASK_APP=app.py
