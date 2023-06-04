@@ -14,6 +14,8 @@
    - 'acne-detection-service'
    - '--image'
    - 'gcr.io/capstone-skincheckai/acne-detection-service'
+   - '--port'
+   - '8080'
 #    delete the line below if you want auth (using gcloud iap)
    - '--allow-unauthenticated'
    - '--region'
