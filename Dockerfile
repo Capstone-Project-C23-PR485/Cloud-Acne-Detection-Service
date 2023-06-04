@@ -14,6 +14,6 @@ EXPOSE 8080
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["python", "-u", "main.py"]
+CMD ["python", "-u", "app.py"]
 
 # CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "main:app"]
