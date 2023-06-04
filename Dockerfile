@@ -12,8 +12,9 @@ COPY . .
 
 EXPOSE 8080
 
-ENV PYTHONUNBUFFERED=1
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
 
-# CMD ["python", "-u", "app.py"]
-
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "main:app"]
+# Run the application
+CMD ["flask", "run"]
