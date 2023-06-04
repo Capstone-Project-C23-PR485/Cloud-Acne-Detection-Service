@@ -16,8 +16,6 @@ def get_bounding_box(image, threshold):
     return xmin, ymin, xmax, ymax
 
 def detect_acne(image_path, model, threshold):
-    result = {}
-
     # Read the input image using OpenCV
     image = cv2.imread(image_path)
 
@@ -75,5 +73,6 @@ def detect_acne(image_path, model, threshold):
             # print(f"Type of acne: {acne_class}, Confidence: {confidence:.3f}")
 
         return image_result, acne_class, confidence
+    # tambahkan request post ke backend dimas
     else:
         return "congrats you dont have acne!!!"

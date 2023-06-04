@@ -1,57 +1,56 @@
-import os;
-import cv2;
-from werkzeug.utils import secure_filename
-from flask import Flask, request, jsonify
-from flask_cors import cross_origin, CORS
-from Analysis import detect_acne, get_bounding_box
-from keras.models import load_model
-from google.cloud import pubsub_v1
-
+from flask import Flask, request
+import json
+import base64
+from Analysis import detect_acne
 
 app = Flask(__name__)
-cors = CORS(app)
 
-app.config['ML_MODEL_PATH'] = 'gs://public-picture-media-bucket/ml_models/model_mobilenetv2_V1.h5'
-app.config['IMAGE_UPLOADED_FOLDER'] = 'gs://public-picture-media-bucket/image_uploaded'
-app.config['IMAGE_RESULT_FOLDER'] = 'gs://public-picture-media-bucket/image_result'
-
-# app.config['UPLOAD_FOLDER'] = 'static/' # google storage bucket link
-
-subscriber = pubsub_v1.SubscriberClient()
-
-# TODO(developer)
-project_id = "capstone-skincheckai"
-subscription_id = "image-uploaded-subs"
-timeout = 10.0
-subscription_path = subscriber.subscription_path(project_id, subscription_id)
-
-# load model
-model = load_model(app.config['ML_MODEL_PATH']) #TODO ubah jadi path ke cloud storage bucket
-
-@app.route('/report-analyses', methods=['POST'])
-@cross_origin()
+@app.route('/', methods=['POST'])
 def index():
-    image = request.files["image"]
-    filename = secure_filename(image.filename)
-    image_path = image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename) # TODO arahkan ke cloud storage bucket 
+    """ Receive and parse pubsub request"""
+    payload = request.get_json()
 
-    image_result, acne_class, confidence = detect_acne(image_path, model, 0.5)
-    image_result = cv2.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'result.jpg'), image_result)
-    # upload image_result ke Google Cloud Storage
-    # provide link result Google Cloud Storage
-    response = jsonify({
-        "message" : 'success',
-        "data" : {
-            # Id
-            "image_result" : image_result,
-            "acne_type" : acne_class,
-            "confidence" : confidence
-        }
-    })
-    response.headers.add("Access-Control-Allow-Origin", "*")
+    # check the pubsub request payload
+    if not payload:
+        msg = "no pubsub payload received"
+        print(f"error: {msg}")
+        return f"Bad Request: {msg}", 400
+    
+    if not isinstance(payload, dict):
+        msg = "invalid payload format"
+        print(f"error: {msg}")
+        return f"Bad Request: {msg}", 400
+    
+    # decode pubsub message
+    pubsub_message = payload["message"]
 
-    return response
+    if isinstance(pubsub_message, dict) and "data" in pubsub_message:
+        try:
+            data = json.loads(base64.b64decode(pubsub_message["data"]).decode())
+        except Exception as e:
+            msg = (
+                "Invalid Pub/Sub message: "
+                "data property is not valid base64 encoded JSON"
+            )
+            print(f"error: {msg}")
+            return f"Bad Request: {msg}", 400
+        
+        if not data["name"] or not data["bucket"]:
+            msg = (
+                "Invalid Cloud Storage notification: "
+                "expected name and bucket properties"
+            )
+            print(f"error: {msg}")
+            return f"Bad Request: {msg}", 400
+        
+        try:
+            # detect_acne(data)
+            return ("", 204)
+        except Exception as e:
+            print(f"error: {e}")
+            return ("", 500)
+        
+    return ("", 500)
 
 if __name__ == '__main__':
     app.run(debug=True)
