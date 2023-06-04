@@ -1,7 +1,7 @@
 from flask import Flask, request
 import json
 import base64
-from Analysis import detect_acne
+# from Analysis import detect_acne
 
 app = Flask(__name__)
 
