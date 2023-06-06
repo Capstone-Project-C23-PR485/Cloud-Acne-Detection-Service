@@ -2,7 +2,7 @@ FROM python:3.11.3
 
 WORKDIR /app
 
-RUN pip3 install --upgrade pip3
+RUN pip3 install --upgrade pip
 
 COPY requirements.txt requirements.txt
 
