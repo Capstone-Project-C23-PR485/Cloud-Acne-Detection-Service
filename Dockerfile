@@ -2,11 +2,11 @@ FROM python:3.11.3
 
 WORKDIR /app
 
-RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade pip3
 
 COPY requirements.txt requirements.txt
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt --default-timeout 100
 
 COPY . .
 
