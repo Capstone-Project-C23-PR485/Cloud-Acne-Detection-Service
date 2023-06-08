@@ -4,7 +4,7 @@ import json
 import base64
 from keras.models import load_model
 import os
-from Analysis import detect_acne
+# from Analysis import detect_acne
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -49,8 +49,8 @@ def index(request: dict):
             return f"Bad Request: {msg}", 400
         
         try:
-            model = load_model('model.h5')
-            detect_acne(data, model, 0.5)
+            # model = load_model('model.h5')
+            # detect_acne(data, model, 0.5)
             return ("", 204)
         except Exception as e:
             print(f"error: {e}")
