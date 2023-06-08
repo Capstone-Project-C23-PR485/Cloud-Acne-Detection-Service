@@ -5,10 +5,12 @@ import base64
 from keras.models import load_model
 import os
 from Analysis import detect_acne
+from fastapi import FastAPI
 
-app = Flask(__name__)
+app = FastAPI()
 
-@app.route('/', methods=['POST'])
+
+@app.post('/')
 def index():
     """ Receive and parse pubsub request"""
     payload = request.get_json()
@@ -56,5 +58,11 @@ def index():
         
     return ("", 500)
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+@app.get('/')
+def example():
+    return "hello world"
+    
+if __name__ == '__main__':
+    # Menjalankan aplikasi Flask menggunakan Uvicorn
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=8000)
