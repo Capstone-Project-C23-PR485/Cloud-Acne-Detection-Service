@@ -3,6 +3,7 @@ import requests
 import json
 import base64
 from keras.models import load_model
+import os
 from Analysis import detect_acne
 
 app = Flask(__name__)
@@ -54,3 +55,6 @@ def index():
             return ("", 500)
         
     return ("", 500)
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
