@@ -11,7 +11,7 @@ app = FastAPI()
 
 
 @app.post('/')
-def index():
+def index(request: dict):
     """ Receive and parse pubsub request"""
     payload = request.get_json()
 
