@@ -6,7 +6,9 @@ RUN pip3 install --upgrade pip
 
 COPY requirements.txt requirements.txt
 
-RUN pip3 install -r requirements.txt --default-timeout 100
+RUN pip3 install -r requirements.txt
+
+RUN RUN wget -O models/model.h5 https://storage.googleapis.com/public-picture-media-bucket/ml_models/model_mobilenetv2_V1.h5
 
 COPY . .
 
@@ -18,4 +20,5 @@ ENV FLASK_RUN_HOST=0.0.0.0
 ENV PORT = 8080
 
 # Run the application
+# CMD . /venv/Scripts/activate && flask run --host 0.0.0.0 --port 8080
 CMD ["flask", "run", "--host", "0.0.0.0", "--port", "8080"]

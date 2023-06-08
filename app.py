@@ -1,11 +1,11 @@
 from flask import Flask, request
+import requests
 import json
 import base64
 from keras.models import load_model
 from Analysis import detect_acne
 
 app = Flask(__name__)
-model = load_model('gs://public-picture-media-bucket/ml_models/model_mobilenetv2_V1.h5')
 
 @app.route('/', methods=['POST'])
 def index():
@@ -46,6 +46,7 @@ def index():
             return f"Bad Request: {msg}", 400
         
         try:
+            model = load_model('model.h5')
             detect_acne(data, model, 0.5)
             return ("", 204)
         except Exception as e:

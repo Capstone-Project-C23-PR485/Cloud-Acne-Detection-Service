@@ -2,12 +2,10 @@ import cv2
 import os
 import numpy as np
 import requests
-import matplotlib.pyplot as plt
+import urllib.request
 from keras.applications.mobilenet_v2 import preprocess_input
+# from keras.models import load_model # for testing purposes
 from google.cloud import storage
-
-
-# TODO upload image result to cloud storage
 
 def get_bounding_box(image, threshold):
     # Placeholder implementation
@@ -23,10 +21,12 @@ def detect_acne(data, model, threshold):
     file_name = data['name']
     bucket_name = data['bucket']
 
-    image_path = f"gs://{bucket_name}/{file_name}"
+    image_path = f"https://storage.googleapis.com/{bucket_name}/{file_name}"
 
     # Read the input image using OpenCV
-    image = cv2.imread(image_path)
+    req = urllib.request.urlopen(image_path)
+    arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
+    image = cv2.imdecode(arr, -1) # 'Load it as it is'
 
     # Resize the image to the required dimensions
     if image is None:
@@ -113,3 +113,14 @@ def post_request(file_name, confidence, acne_class):
     response = requests.post('https://skincheckai-api-b6zefxgbfa-et.a.run.app', data=data)
 
     return response;
+
+
+# for testing purposes
+# data = {
+#     'name' : 'download.jpg',
+#     'bucket' : 'public-picture-media-bucket'
+# }
+
+# model = load_model('model.h5')
+
+# detect_acne(data, model, 0.5)
