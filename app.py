@@ -5,7 +5,7 @@ import base64
 from keras.models import load_model
 import os
 # from Analysis import detect_acne
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
@@ -13,18 +13,18 @@ app = FastAPI()
 @app.post('/')
 def index(request: dict):
     """ Receive and parse pubsub request"""
-    payload = request.get_json()
+    payload = request
 
     # check the pubsub request payload
     if not payload:
         msg = "no pubsub payload received"
         print(f"error: {msg}")
-        return f"Bad Request: {msg}", 400
+        raise HTTPException(400, detail=f"Bad Request:{msg}")
     
     if not isinstance(payload, dict):
         msg = "invalid payload format"
         print(f"error: {msg}")
-        return f"Bad Request: {msg}", 400
+        raise HTTPException(400, detail=f"Bad Request:{msg}")
     
     # decode pubsub message
     pubsub_message = payload["message"]
@@ -38,7 +38,7 @@ def index(request: dict):
                 "data property is not valid base64 encoded JSON"
             )
             print(f"error: {msg}")
-            return f"Bad Request: {msg}", 400
+            raise HTTPException(400, detail=f"Bad Request:{msg}")
         
         if not data["name"] or not data["bucket"]:
             msg = (
@@ -46,7 +46,7 @@ def index(request: dict):
                 "expected name and bucket properties"
             )
             print(f"error: {msg}")
-            return f"Bad Request: {msg}", 400
+            raise HTTPException(400, detail=f"Bad Request:{msg}")
         
         try:
             # model = load_model('model.h5')
@@ -54,15 +54,10 @@ def index(request: dict):
             return ("", 204)
         except Exception as e:
             print(f"error: {e}")
-            return ("", 500)
+            raise HTTPException(500, detail="")
         
-    return ("", 500)
+    raise HTTPException(500, detail="")
 
 @app.get('/')
 def example():
     return "hello world"
-    
-if __name__ == '__main__':
-    # Menjalankan aplikasi Flask menggunakan Uvicorn
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8080)
