@@ -18,8 +18,9 @@ def get_bounding_box(image, threshold):
     return xmin, ymin, xmax, ymax
 
 def detect_acne(data, model, threshold):
-    file_name = data['name']
+    file_path = data['name']
     # TODO pisahkah prefix image-uploaded nya
+    file_name = file_path.split('/')[1]
     bucket_name = data['bucket']
 
     image_path = f"https://storage.googleapis.com/{bucket_name}/{file_name}"

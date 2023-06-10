@@ -4,7 +4,7 @@ import json
 import base64
 from keras.models import load_model
 import os
-# from Analysis import detect_acne
+from Analysis import detect_acne
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -37,8 +37,8 @@ def index(request: dict):
                 "Invalid Pub/Sub message: "
                 "data property is not valid base64 encoded JSON"
             )
-            print(f"error: {msg}")
-            raise HTTPException(400, detail=f"Bad Request:{msg}")
+            print(f"error: {e}")
+            raise HTTPException(400, detail=f"Bad Request:{e}")
         
         if not data["name"] or not data["bucket"]:
             msg = (
@@ -49,8 +49,8 @@ def index(request: dict):
             raise HTTPException(400, detail=f"Bad Request:{msg}")
         
         try:
-            # model = load_model('model.h5')
-            # detect_acne(data, model, 0.5)
+            model = load_model('models/model.h5')
+            detect_acne(data, model, 0.5)
             return ("", 204)
         except Exception as e:
             print(f"error: {e}")

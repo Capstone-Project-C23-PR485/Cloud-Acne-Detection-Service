@@ -35,10 +35,21 @@ ENV PYTHONUNBUFFERED True
 # Copy local code to the container image.
 ENV APP_HOME /app
 WORKDIR $APP_HOME
+
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
+# Download file model machine learning
+RUN curl -o model.h5 https://storage.googleapis.com/public-picture-media-bucket/ml_models/V7_model_mobilenetv2.h5
+
 COPY . ./
 
+# Move the model file to the desired location
+RUN mkdir -p /app/models
+RUN mv model.h5 /app/models/model.h5
+
 # Install production dependencies.
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt --default-timeout 100
 
 # Run the web service on container startup. Here we use the gunicorn
 # webserver, with one worker process and 8 threads.
