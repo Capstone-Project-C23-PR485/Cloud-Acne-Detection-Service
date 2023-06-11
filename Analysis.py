@@ -97,14 +97,14 @@ def upload_to_gcs(bucket_name, image_result, file_name):
     image_result = cv2.imwrite(f'static/{file_name}', image_result)
 
     destination_blob_name = f'images_result/{file_name}'
-    storage_client = storage.Client()
+    storage_client = storage.Client(os.getenv('PROJECT_ID'))
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_filename(f'static/{file_name}')
     os.remove(f'static/{file_name}')
 
 def post_request(file_name, confidence, acne_class):
-    gcs_bucket_url = 'gs://public-picture-media-bucket/images_result'
+    gcs_bucket_url = f"{os.getenv('BUCKET_URL')}/images_result"
     data = {
       "id": 2,
       "data": {"confidence": confidence, "detectnedAcne": acne_class},
@@ -112,7 +112,7 @@ def post_request(file_name, confidence, acne_class):
       "model": "acne"
     }
 
-    response = requests.post('https://skincheckai-api-b6zefxgbfa-et.a.run.app', data=data)
+    response = requests.post('https://skincheckai-api-b6zefxgbfa-et.a.run.app/machine-learning/report-analyses', data=data)
 
     return response;
 
