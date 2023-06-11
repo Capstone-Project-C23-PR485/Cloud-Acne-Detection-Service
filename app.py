@@ -50,10 +50,11 @@ def index(request: dict):
         
         try:
             model = load_model('models/model.h5')
+            print(f"DEBUG: {model}")
             detect_acne(data, model, 0.5)
             return ("", 204)
         except Exception as e:
-            print(f"error: {e}")
+            print(f"DEBUG: exception when trying to detect acne. Error message: {e}")
             raise HTTPException(500, detail="")
         
     raise HTTPException(500, detail="")
