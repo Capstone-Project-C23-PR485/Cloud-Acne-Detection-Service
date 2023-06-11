@@ -23,7 +23,7 @@ def detect_acne(data, model, threshold):
     file_name = file_path.split('/')[1]
     bucket_name = data['bucket']
 
-    image_path = f"https://storage.googleapis.com/{bucket_name}/images-uploaded/{file_name}"
+    image_path = f"https://storage.googleapis.com/{bucket_name}/{file_path}"
 
     # Read the input image using OpenCV
     req = urllib.request.urlopen(image_path)
