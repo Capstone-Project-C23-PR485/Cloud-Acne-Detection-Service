@@ -23,7 +23,7 @@ def detect_acne(data, model, threshold):
     file_name = file_path.split('/')[1]
     bucket_name = data['bucket']
 
-    image_path = f"https://storage.googleapis.com/{bucket_name}/{file_name}"
+    image_path = f"https://storage.googleapis.com/{bucket_name}/images-uploaded/{file_name}"
 
     # Read the input image using OpenCV
     req = urllib.request.urlopen(image_path)
@@ -86,9 +86,9 @@ def detect_acne(data, model, threshold):
         acne_class = None
         confidence = None
     
-    post_response = post_request(file_name=file_name, confidence=confidence, acne_class=acne_class)
+    # post_response = post_request(file_name=file_name, confidence=confidence, acne_class=acne_class)
     upload_response = upload_to_gcs(bucket_name, image_result, file_name)
-    return post_response, upload_response
+    return upload_response
 
     
     
@@ -106,7 +106,7 @@ def upload_to_gcs(bucket_name, image_result, file_name):
 def post_request(file_name, confidence, acne_class):
     gcs_bucket_url = f"{os.getenv('BUCKET_URL')}/images_result"
     data = {
-      "id": 2,
+      "id": file_name,
       "data": {"confidence": confidence, "detectnedAcne": acne_class},
       "image": f"{gcs_bucket_url}/{file_name}",
       "model": "acne"
