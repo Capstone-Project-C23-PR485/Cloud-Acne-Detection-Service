@@ -3,4 +3,3 @@ example.ipynb
 __pycache__
 ./models/
 *.h5
-./static/
