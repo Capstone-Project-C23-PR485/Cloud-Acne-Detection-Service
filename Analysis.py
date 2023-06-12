@@ -102,8 +102,7 @@ def detect_acne(data, model, threshold):
         raise Exception("Error when trying to draw bounding box")
     
     try:
-        image_result_path = f"https://storage.googleapis.com/{bucket_name}/images_result/{file_name}"
-        post_response = post_request(file_name=image_result_path, confidence=confidence, acne_class=acne_class, file_path=image_path)
+        post_response = post_request(file_name=file_name, confidence=confidence, acne_class=acne_class, file_path=image_path)
     except Exception as e:
         print(f"DEBUG: exception when trying to post request. Error message: {e}")
         raise Exception("Error when trying to post request")

@@ -26,6 +26,6 @@
    - '--set-env-vars'
    - 'PROJECT_ID=capstone-skincheckai'
    - '--set-env-vars'
-   - 'BUCKET_URL=gs://public-picture-media-bucket'
+   - 'BUCKET_URL=https://storage.googleapis.com/public-picture-media-bucket'
  images:
  - 'gcr.io/capstone-skincheckai/acne-detection-service'
