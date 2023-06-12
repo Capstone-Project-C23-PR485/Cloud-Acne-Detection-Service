@@ -27,20 +27,10 @@
 
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
-FROM python:3.11-slim
+# FROM python:3.11-slim
 
-# Install system packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  bzip2 \
-  g++ \
-  git \
-  graphviz \
-  libgl1-mesa-glx \
-  libhdf5-dev \
-  openmpi-bin \
-  wget \
-  python3-tk && \
-  rm -rf /var/lib/apt/lists/*
+# use base from gcr.io/capstone-skincheckai/ml-base
+FROM gcr.io/capstone-skincheckai/ml-base
 
 # Allow statements and log messages to immediately appear in the logs
 ENV PYTHONUNBUFFERED True
@@ -48,9 +38,6 @@ ENV PYTHONUNBUFFERED True
 # Copy local code to the container image.
 ENV APP_HOME /app
 WORKDIR $APP_HOME
-
-# Install curl
-RUN apt-get update && apt-get install -y curl
 
 # Download file model machine learning
 RUN curl -o model.h5 https://storage.googleapis.com/public-picture-media-bucket/ml_models/V7_model_mobilenetv2.h5
@@ -60,9 +47,6 @@ COPY . ./
 # Move the model file to the desired location
 RUN mkdir -p /app/models
 RUN mv model.h5 /app/models/model.h5
-
-# Install production dependencies.
-RUN pip install --no-cache-dir -r requirements.txt --default-timeout 100
 
 # Run the web service on container startup. Here we use the gunicorn
 # webserver, with one worker process and 8 threads.
