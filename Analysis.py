@@ -103,7 +103,7 @@ def detect_acne(data, model, threshold):
     
     try:
         image_result_path = f"https://storage.googleapis.com/{bucket_name}/images_result/{file_name}"
-        post_response = post_request(file_name=image_result_path, confidence=confidence, acne_class=acne_class)
+        post_response = post_request(file_name=image_result_path, confidence=confidence, acne_class=acne_class, file_path=image_path)
     except Exception as e:
         print(f"DEBUG: exception when trying to post request. Error message: {e}")
         raise Exception("Error when trying to post request")
@@ -125,10 +125,10 @@ def upload_to_gcs(bucket_name, image_result, file_name):
     blob.upload_from_filename(f'static/{file_name}')
     os.remove(f'static/{file_name}')
 
-def post_request(file_name, confidence, acne_class):
+def post_request(file_name, confidence, acne_class, file_path):
     gcs_bucket_url = f"{os.getenv('BUCKET_URL')}/images_result"
     data = {
-      "id": file_name,
+      "id": file_path,
       "data": {"confidence": confidence, "detectnedAcne": acne_class},
       "image": f"{gcs_bucket_url}/{file_name}",
       "model": "acne"
