@@ -86,22 +86,28 @@ def detect_acne(data, model, threshold):
         acne_class = None
         confidence = None
     
-    # post_response = post_request(file_name=file_name, confidence=confidence, acne_class=acne_class)
+    post_response = post_request(file_name=file_name, confidence=confidence, acne_class=acne_class)
     upload_response = upload_to_gcs(bucket_name, image_result, file_name)
-    return upload_response
+    return upload_response, post_response
 
     
     
 def upload_to_gcs(bucket_name, image_result, file_name):
     # gcs_bucket_name = 'public-picture-media-bucket'
     image_result = cv2.imwrite(f'static/{file_name}', image_result)
-
+    print(f"checkpoint 1")
     destination_blob_name = f'images_result/{file_name}'
+    print(f"checkpoint 2 : {destination_blob_name}")
     storage_client = storage.Client(os.getenv('PROJECT_ID'))
+    print(f"checkpoint 3 : {storage_client}")
     bucket = storage_client.get_bucket(bucket_name)
+    print(f"checkpoint 4 : {bucket}")
     blob = bucket.blob(destination_blob_name)
+    print(f"checkpoint 5")
     blob.upload_from_filename(f'static/{file_name}')
+    print(f"checkpoint 6")
     os.remove(f'static/{file_name}')
+    print(f"checkpoint 6")
 
 def post_request(file_name, confidence, acne_class):
     gcs_bucket_url = f"{os.getenv('BUCKET_URL')}/images_result"
@@ -119,7 +125,7 @@ def post_request(file_name, confidence, acne_class):
 
 # for testing purposes
 # data = {
-#     'name' : 'download.jpg',
+#     'name' : 'i.jpg',
 #     'bucket' : 'public-picture-media-bucket'
 # }
 
