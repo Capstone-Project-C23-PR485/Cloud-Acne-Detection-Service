@@ -10,7 +10,7 @@ from fastapi import FastAPI, HTTPException
 app = FastAPI()
 
 
-@app.route('/', ['POS'])
+@app.route('/', ['POST'])
 def index(request: dict):
     """ Receive and parse pubsub request"""
     payload = request
