@@ -19,7 +19,6 @@ def get_bounding_box(image, threshold):
 
 def detect_acne(data, model, threshold):
     file_path = data['name']
-    # TODO pisahkah prefix image-uploaded nya
     file_name = file_path.split('/')[1]
     bucket_name = data['bucket']
 
@@ -75,6 +74,9 @@ def detect_acne(data, model, threshold):
     
     try:
         # Draw bounding boxes on the image for detected acne instances
+        image_result = None
+        acne_class = None
+        confidence = None
         if len(detections) > 0:
             for detection in detections:
                 acne_class = detection['class']
@@ -121,21 +123,25 @@ def upload_to_gcs(bucket_name, image_result, file_name):
     storage_client = storage.Client(os.getenv('PROJECT_ID'))
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
-    blob.upload_from_filename(f'static/{file_name}')
+    response = blob.upload_from_filename(f'static/{file_name}')
     os.remove(f'static/{file_name}')
+    return response
 
 def post_request(file_name, confidence, acne_class, file_path):
     gcs_bucket_url = f"{os.getenv('BUCKET_URL')}/images_result"
     data = {
       "id": file_path,
-      "data": {"confidence": confidence, "detectnedAcne": acne_class},
+      "data": {
+          "confidence": confidence, 
+          "detectnedAcne": acne_class
+          },
       "image": f"{gcs_bucket_url}/{file_name}",
       "model": "acne"
     }
 
     response = requests.post('https://skincheckai-api-b6zefxgbfa-et.a.run.app/machine-learning/report-analyses', data=data)
 
-    return response;
+    return response
 
 
 # for testing purposes
