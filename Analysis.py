@@ -140,7 +140,7 @@ def post_request(file_name, confidence, acne_class, file_path):
 
     response = requests.post(
         "https://skincheckai-api-b6zefxgbfa-et.a.run.app/machine-learning/report-analyses",
-        data=data,
+        json=data,
     )
 
     return response
