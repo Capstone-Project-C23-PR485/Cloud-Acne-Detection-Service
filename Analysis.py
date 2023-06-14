@@ -86,7 +86,7 @@ def detect_acne(data, model, threshold):
                 cv2.rectangle(predicted_image, (xmin, ymin), (xmax, ymax), color, 2)
 
             # Display the output image with bounding boxes
-            image_result = image
+            image_result = predicted_image
             # print("You have acne.")
             for detection in detections:
                 acne_class = detection["class"]
