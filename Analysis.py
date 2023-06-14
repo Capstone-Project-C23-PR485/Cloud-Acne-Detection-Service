@@ -41,10 +41,10 @@ def detect_acne(data, model, threshold):
         if image is None:
             return ("DEBUG! Wrong path:", image_path)
         else:
-            image = cv2.resize(image, dsize=(224, 224))
+            image_resized = cv2.resize(image, dsize=(224, 224))
 
         # Preprocess the image for model prediction
-        input_data = preprocess_input(np.expand_dims(image, axis=0))
+        input_data = preprocess_input(np.expand_dims(image_resized, axis=0))
     except Exception as e:
         print(f"DEBUG: exception when trying to preprocess image. Error message: {e}")
         raise Exception("Error when trying to preprocess image")
@@ -72,17 +72,18 @@ def detect_acne(data, model, threshold):
         image_result = None
         acne_class = None
         confidence = None
+        predicted_image = cv2.resize(image, (270,280))
         if len(detections) > 0:
             for detection in detections:
                 acne_class = detection["class"]
                 confidence = detection["confidence"]
 
                 # Get the predicted bounding box coordinates
-                xmin, ymin, xmax, ymax = get_bounding_box(image, threshold)
+                xmin, ymin, xmax, ymax = get_bounding_box(predicted_image, threshold)
 
                 # Draw the bounding box on the image with purple-red color
                 color = (203, 0, 203)  # Purple-red color (BGR format)
-                cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, 2)
+                cv2.rectangle(predicted_image, (xmin, ymin), (xmax, ymax), color, 2)
 
             # Display the output image with bounding boxes
             image_result = image
@@ -91,7 +92,7 @@ def detect_acne(data, model, threshold):
                 acne_class = detection["class"]
                 confidence = detection["confidence"]
         else:
-            image_result = image
+            image_result = predicted_image
             acne_class = None
             confidence = None
     except Exception as e:
