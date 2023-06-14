@@ -135,7 +135,7 @@ def post_request(file_name, confidence, acne_class, file_path):
     data = {
         "id": file_path,
         "data": {"confidence": confidence, "result": acne_class},
-        "image": f"{gcs_bucket_url}/{file_name}",
+        "image": f"{gcs_bucket_url}/acne-{file_name}",
         "model": "acne",
     }
 
