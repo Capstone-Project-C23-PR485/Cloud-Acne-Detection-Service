@@ -134,7 +134,7 @@ def post_request(file_name, confidence, acne_class, file_path):
     gcs_bucket_url = f"{os.getenv('BUCKET_URL')}/images_result"
     data = {
         "id": file_path,
-        "data": {"confidence": confidence, "detectnedAcne": acne_class},
+        "data": {"confidence": confidence, "result": acne_class},
         "image": f"{gcs_bucket_url}/{file_name}",
         "model": "acne",
     }
