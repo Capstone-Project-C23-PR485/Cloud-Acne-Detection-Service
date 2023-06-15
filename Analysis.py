@@ -84,6 +84,7 @@ def detect_acne(data, model, threshold):
                 # Draw the bounding box on the image with purple-red color
                 color = (203, 0, 203)  # Purple-red color (BGR format)
                 cv2.rectangle(predicted_image, (xmin, ymin), (xmax, ymax), color, 2)
+                cv2.putText(predicted_image, acne_class, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
 
             # Display the output image with bounding boxes
             image_result = predicted_image
